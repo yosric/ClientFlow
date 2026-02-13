@@ -1470,6 +1470,11 @@ class Home(QWidget):
             self.btn_update.clicked.connect(self.check_for_updates)
             search_layout.addWidget(self.btn_update)
 
+            #test button 
+            test_btn = self.top_button("Test")
+            search_layout.addWidget(test_btn)
+
+
             # Add the entire row to the main layout
             self.layout.addLayout(search_layout)
 
@@ -1611,6 +1616,7 @@ class Home(QWidget):
             
             self.update_checker = UpdateChecker()
             self.update_checker.update_available.connect(self.on_update_available)
+            self.update_checker.no_update.connect(self.on_no_update_available)
             self.update_checker.check_error.connect(self.on_update_error)
             self.update_checker.start()
 
@@ -1661,6 +1667,15 @@ class Home(QWidget):
         def on_update_error(self, error_msg):
             """Handle update errors"""
             QMessageBox.warning(self, "Update Error", error_msg)
+            self.btn_update.setEnabled(True)
+            self.btn_update.setText("⬇️ Check for Updates")
+
+        def on_no_update_available(self):
+            """Handle no update available"""
+            QMessageBox.information(
+                self, "No Update Available",
+                "You are already using the latest version."
+            )
             self.btn_update.setEnabled(True)
             self.btn_update.setText("⬇️ Check for Updates")
 

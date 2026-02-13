@@ -10,6 +10,7 @@ from param import UPDATE_JSON_URL, APP_VERSION
 class UpdateChecker(QThread):
     """Check for app updates in background thread"""
     update_available = Signal(dict)  # Emits {'version': str, 'url': str, 'notes': str}
+    no_update = Signal()  # Emits when current version is latest
     check_error = Signal(str)  # Emits error message
     
     def run(self):
@@ -21,6 +22,8 @@ class UpdateChecker(QThread):
             # Compare versions
             if self.is_newer_version(remote_version.get('version'), APP_VERSION):
                 self.update_available.emit(remote_version)
+            else:
+                self.no_update.emit()
             
         except Exception as e:
             self.check_error.emit(f"Update check failed: {str(e)}")
